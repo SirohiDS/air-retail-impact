@@ -80,12 +80,10 @@ def fetch_location(lat: float, lon: float, api_key: str) -> tuple[int | None, in
         data = _get(
             f"{OPENAQ_BASE}/locations",
             {
-                "coordinates": f"{lat},{lon}",
-                "radius":       radius,
+                "coordinates":  f"{lat},{lon}",
+                "radius":        radius,
                 "parameters_id": PM25_PARAM_ID,
-                "limit":        5,
-                "sort":         "lastUpdated",
-                "order":        "desc",
+                "limit":         5,
             },
             headers,
         )
@@ -96,7 +94,10 @@ def fetch_location(lat: float, lon: float, api_key: str) -> tuple[int | None, in
 
     for loc in data["results"]:
         for sensor in loc.get("sensors", []):
-            if sensor.get("parameter", {}).get("id") == PM25_PARAM_ID:
+            param = sensor.get("parameter", {})
+            param_id   = param.get("id")   if isinstance(param, dict) else None
+            param_name = param.get("name", "") if isinstance(param, dict) else str(param)
+            if param_id == PM25_PARAM_ID or "pm25" in param_name.lower():
                 return loc["id"], sensor["id"]
 
     return None, None
@@ -145,9 +146,17 @@ def fetch_hourly_history(sensor_id: int, api_key: str, limit: int = 24) -> list[
 
     history = []
     for h in data.get("results", []):
-        dt_block = h.get("period", {}).get("datetimeTo", {})
-        ts  = dt_block.get("utc") if isinstance(dt_block, dict) else None
-        val = h.get("value")
+        # OpenAQ v3 sensors/hours may use `period.datetimeTo` or top-level `datetime`
+        ts = None
+        period = h.get("period", {})
+        if isinstance(period, dict):
+            dt_to = period.get("datetimeTo") or period.get("datetime_to", {})
+            ts = dt_to.get("utc") if isinstance(dt_to, dict) else None
+        if ts is None:
+            dt_block = h.get("datetime", {})
+            ts = dt_block.get("utc") if isinstance(dt_block, dict) else None
+
+        val = h.get("value") or h.get("average")
         if ts is not None and val is not None:
             history.append({"datetime": ts, "value": round(float(val), 2)})
 
@@ -199,61 +208,71 @@ def run_pipeline(api_key: str) -> list[dict]:
         label = f"{city['name']} ({city['district']})"
         print(f"  ▶  {label}")
 
-        # 1. Locate nearest monitoring station
-        location_id, sensor_id = fetch_location(city["lat"], city["lon"], api_key)
-
-        if location_id is None:
-            print(f"     ⚠  No PM2.5 station found within 25 km — skipping.\n")
-            results.append({
-                "city":                    label,
-                "country":                 city["iso"],
-                "pm25":                    None,
-                "footfall_impact":         "No Data",
-                "revenue_risk":            "Unknown",
-                "footfall_pct":            None,
+        # Shared stub for cities where data cannot be retrieved
+        def _no_data_record(reason: str) -> dict:
+            print(f"     ⚠  {reason}\n")
+            return {
+                "city":                      label,
+                "country":                   city["iso"],
+                "pm25":                      None,
+                "footfall_impact":           "No Data",
+                "revenue_risk":              "Unknown",
+                "footfall_pct":              None,
                 "persistence_forecast_pm25": None,
-                "recovery_forecast_pm25":  None,
-                "hourly_history":          [],
-                "last_updated":            datetime.now(timezone.utc).isoformat(),
+                "recovery_forecast_pm25":    None,
+                "hourly_history":            [],
+                "last_updated":              datetime.now(timezone.utc).isoformat(),
+            }
+
+        try:
+            # 1. Locate nearest monitoring station
+            location_id, sensor_id = fetch_location(city["lat"], city["lon"], api_key)
+
+            if location_id is None:
+                results.append(_no_data_record("No PM2.5 station found within 25 km."))
+                continue
+
+            # 2. Latest PM2.5 reading
+            pm25_value, ts = fetch_latest_pm25(location_id, api_key)
+
+            if pm25_value is None:
+                results.append(_no_data_record("Station found but no recent PM2.5 reading."))
+                continue
+
+            pm25_value = round(float(pm25_value), 2)
+            print(f"     PM2.5 = {pm25_value} µg/m³  (station #{location_id})")
+
+            # 3. Business logic
+            footfall, risk, pct = calculate_footfall_impact(pm25_value)
+            persistence, recovery = calculate_forecasts(pm25_value)
+
+            # 4. Hourly history for chart (best-effort)
+            history = []
+            if sensor_id:
+                try:
+                    history = fetch_hourly_history(sensor_id, api_key)
+                    print(f"     📊 {len(history)} hourly data points fetched")
+                except Exception as e:
+                    print(f"     ⚠  History fetch failed: {e}")
+
+            results.append({
+                "city":                      label,
+                "country":                   city["iso"],
+                "pm25":                      pm25_value,
+                "footfall_impact":           footfall,
+                "revenue_risk":              risk,
+                "footfall_pct":              pct,
+                "persistence_forecast_pm25": persistence,
+                "recovery_forecast_pm25":    recovery,
+                "hourly_history":            history,
+                "last_updated":              ts or datetime.now(timezone.utc).isoformat(),
             })
-            continue
+            print()
 
-        # 2. Latest PM2.5 reading
-        pm25_value, ts = fetch_latest_pm25(location_id, api_key)
-
-        if pm25_value is None:
-            print(f"     ⚠  Latest reading unavailable — skipping.\n")
-            continue
-
-        pm25_value = round(float(pm25_value), 2)
-        print(f"     PM2.5 = {pm25_value} µg/m³  (station #{location_id})")
-
-        # 3. Business logic
-        footfall, risk, pct = calculate_footfall_impact(pm25_value)
-        persistence, recovery = calculate_forecasts(pm25_value)
-
-        # 4. Hourly history for chart (best-effort)
-        history = []
-        if sensor_id:
-            try:
-                history = fetch_hourly_history(sensor_id, api_key)
-                print(f"     📊 {len(history)} hourly data points fetched")
-            except Exception as e:
-                print(f"     ⚠  History fetch failed: {e}")
-
-        results.append({
-            "city":                      label,
-            "country":                   city["iso"],
-            "pm25":                      pm25_value,
-            "footfall_impact":           footfall,
-            "revenue_risk":              risk,
-            "footfall_pct":              pct,
-            "persistence_forecast_pm25": persistence,
-            "recovery_forecast_pm25":    recovery,
-            "hourly_history":            history,
-            "last_updated":              ts or datetime.now(timezone.utc).isoformat(),
-        })
-        print()
+        except requests.exceptions.HTTPError as e:
+            results.append(_no_data_record(f"HTTP error: {e}"))
+        except requests.exceptions.RequestException as e:
+            results.append(_no_data_record(f"Network error: {e}"))
 
     # 5. Write JSON
     output_path = "retail_risk.json"

@@ -11,22 +11,6 @@
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            risk: {
-              low:    { bg: "#d1fae5", border: "#10b981", text: "#065f46", badge: "#10b981" },
-              medium: { bg: "#fef3c7", border: "#f59e0b", text: "#78350f", badge: "#f59e0b" },
-              high:   { bg: "#fee2e2", border: "#ef4444", text: "#7f1d1d", badge: "#ef4444" },
-            }
-          }
-        }
-      }
-    };
-  </script>
-
   <style>
     body { font-family: 'Inter', system-ui, sans-serif; }
 
@@ -136,12 +120,13 @@
   <script>
     // ── Helpers ──────────────────────────────────────────────────────────
 
+    const RISK_FALLBACK = { card: "bg-gray-800", badge: "bg-gray-600", text: "text-gray-300" };
     const riskClass = {
       Low:     { card: "risk-card-low",    badge: "badge-low",    text: "text-low"    },
       Medium:  { card: "risk-card-medium", badge: "badge-medium", text: "text-medium" },
       High:    { card: "risk-card-high",   badge: "badge-high",   text: "text-high"   },
-      Unknown: { card: "bg-gray-800",      badge: "bg-gray-600",  text: "text-gray-300" },
     };
+    function getRiskCls(r) { return riskClass[r] || RISK_FALLBACK; }
 
     const chartColors = [
       "rgba(52,211,153,0.9)",   // emerald
@@ -176,7 +161,7 @@
       const top3 = data.slice(0, 3);
       top3.forEach(city => {
         const r    = city.revenue_risk || "Unknown";
-        const cls  = riskClass[r] || riskClass.Unknown;
+        const cls  = getRiskCls(r);
         const pm   = city.pm25;
         const pct  = Math.min((pm ?? 0) / 300 * 100, 100);
 
@@ -313,7 +298,7 @@
 
       data.forEach(city => {
         const r   = city.revenue_risk || "Unknown";
-        const cls = riskClass[r] || riskClass.Unknown;
+        const cls = getRiskCls(r);
         const tr  = document.createElement("tr");
         tr.className = "hover:bg-gray-900/50 transition-colors";
         tr.innerHTML = `
