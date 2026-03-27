@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Air Quality Retail Impact Dashboard</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            risk: {
+              low:    { bg: "#d1fae5", border: "#10b981", text: "#065f46", badge: "#10b981" },
+              medium: { bg: "#fef3c7", border: "#f59e0b", text: "#78350f", badge: "#f59e0b" },
+              high:   { bg: "#fee2e2", border: "#ef4444", text: "#7f1d1d", badge: "#ef4444" },
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+
+    .risk-card-low    { background:#d1fae5; border-color:#10b981; }
+    .risk-card-medium { background:#fef3c7; border-color:#f59e0b; }
+    .risk-card-high   { background:#fee2e2; border-color:#ef4444; }
+
+    .badge-low    { background:#10b981; }
+    .badge-medium { background:#f59e0b; }
+    .badge-high   { background:#ef4444; }
+
+    .text-low    { color:#065f46; }
+    .text-medium { color:#78350f; }
+    .text-high   { color:#7f1d1d; }
+
+    .pm25-bar-fill { transition: width 0.8s ease; }
+
+    #chart-container { position: relative; height: 320px; }
+  </style>
+</head>
+<body class="bg-gray-950 text-gray-100 min-h-screen">
+
+  <!-- ─── HEADER ──────────────────────────────────────────────────────── -->
+  <header class="bg-gray-900 border-b border-gray-800 px-6 py-5">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">
+          🌫️ Air Quality Retail Impact Dashboard
+        </h1>
+        <p class="text-gray-400 text-sm mt-1">
+          Real-time PM2.5 footfall elasticity model · WHO limit 15 µg/m³ · OpenAQ v3
+        </p>
+      </div>
+      <div id="last-updated" class="text-xs text-gray-500 bg-gray-800 px-3 py-1.5 rounded-full self-start sm:self-auto">
+        Loading…
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-10">
+
+    <!-- ─── WHO REFERENCE BAR ──────────────────────────────────────────── -->
+    <div class="bg-gray-900 rounded-xl border border-gray-800 px-5 py-4 flex flex-wrap gap-4 items-center text-sm">
+      <span class="font-semibold text-gray-300">PM2.5 Risk Scale:</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-emerald-400 inline-block"></span> ≤ 15 µg/m³ — Normal</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-yellow-400 inline-block"></span> 15–100 — Slight Decrease</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-orange-500 inline-block"></span> 100–250 — Significant Avoidance</span>
+      <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span> &gt; 250 — Retail Standstill</span>
+    </div>
+
+    <!-- ─── TOP 3 RISK CARDS ───────────────────────────────────────────── -->
+    <section>
+      <h2 class="text-lg font-semibold text-gray-200 mb-4">Featured Retail Risk Alerts</h2>
+      <div id="risk-cards" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Cards injected by JS -->
+        <div class="animate-pulse bg-gray-800 rounded-2xl h-48"></div>
+        <div class="animate-pulse bg-gray-800 rounded-2xl h-48"></div>
+        <div class="animate-pulse bg-gray-800 rounded-2xl h-48"></div>
+      </div>
+    </section>
+
+    <!-- ─── PM2.5 TREND CHART ─────────────────────────────────────────── -->
+    <section class="bg-gray-900 rounded-2xl border border-gray-800 p-6">
+      <h2 class="text-lg font-semibold text-gray-200 mb-1">24-Hour PM2.5 Trend</h2>
+      <p class="text-xs text-gray-500 mb-5">Hourly averages for top 3 monitored cities</p>
+      <div id="chart-container">
+        <canvas id="pm25Chart"></canvas>
+      </div>
+      <p id="no-history-msg" class="hidden text-center text-gray-500 text-sm mt-4">
+        No historical data available from the API for these locations.
+      </p>
+    </section>
+
+    <!-- ─── FULL CITY TABLE ───────────────────────────────────────────── -->
+    <section>
+      <h2 class="text-lg font-semibold text-gray-200 mb-4">All 10 Cities — Risk Overview</h2>
+      <div class="overflow-x-auto rounded-xl border border-gray-800">
+        <table class="w-full text-sm">
+          <thead class="bg-gray-900 text-gray-400 uppercase text-xs tracking-wider">
+            <tr>
+              <th class="px-4 py-3 text-left">City</th>
+              <th class="px-4 py-3 text-right">PM2.5 (µg/m³)</th>
+              <th class="px-4 py-3 text-left">Footfall Impact</th>
+              <th class="px-4 py-3 text-center">Revenue Risk</th>
+              <th class="px-4 py-3 text-right">Persistence Fcst</th>
+              <th class="px-4 py-3 text-right">Recovery Fcst</th>
+              <th class="px-4 py-3 text-right">Last Updated</th>
+            </tr>
+          </thead>
+          <tbody id="city-table" class="divide-y divide-gray-800 bg-gray-950">
+            <tr><td colspan="7" class="text-center text-gray-500 py-8">Loading data…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── FOOTER ──────────────────────────────────────────────────────── -->
+  <footer class="mt-12 border-t border-gray-800 py-5 text-center text-xs text-gray-600">
+    Data: <a href="https://openaq.org" class="underline hover:text-gray-400" target="_blank">OpenAQ v3</a>
+    · WHO PM2.5 guideline 15 µg/m³ (24-hr)
+    · Built with Tailwind CSS &amp; Chart.js
+  </footer>
+
+  <!-- ─── JAVASCRIPT ────────────────────────────────────────────────── -->
+  <script>
+    // ── Helpers ──────────────────────────────────────────────────────────
+
+    const riskClass = {
+      Low:     { card: "risk-card-low",    badge: "badge-low",    text: "text-low"    },
+      Medium:  { card: "risk-card-medium", badge: "badge-medium", text: "text-medium" },
+      High:    { card: "risk-card-high",   badge: "badge-high",   text: "text-high"   },
+      Unknown: { card: "bg-gray-800",      badge: "bg-gray-600",  text: "text-gray-300" },
+    };
+
+    const chartColors = [
+      "rgba(52,211,153,0.9)",   // emerald
+      "rgba(251,191,36,0.9)",   // amber
+      "rgba(239,68,68,0.9)",    // red
+    ];
+
+    function pm25Color(v) {
+      if (v == null) return "#6b7280";
+      if (v <= 15)  return "#10b981";
+      if (v <= 100) return "#f59e0b";
+      if (v <= 250) return "#f97316";
+      return "#ef4444";
+    }
+
+    function fmtDate(isoStr) {
+      if (!isoStr) return "—";
+      const d = new Date(isoStr);
+      return d.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+    }
+
+    function fmtPm25(v) {
+      return v != null ? v.toFixed(1) : "N/A";
+    }
+
+    // ── Risk Cards ────────────────────────────────────────────────────────
+
+    function renderCards(data) {
+      const container = document.getElementById("risk-cards");
+      container.innerHTML = "";
+
+      const top3 = data.slice(0, 3);
+      top3.forEach(city => {
+        const r    = city.revenue_risk || "Unknown";
+        const cls  = riskClass[r] || riskClass.Unknown;
+        const pm   = city.pm25;
+        const pct  = Math.min((pm ?? 0) / 300 * 100, 100);
+
+        const card = document.createElement("div");
+        card.className = `${cls.card} border-2 rounded-2xl p-5 flex flex-col gap-3 shadow-lg`;
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <p class="${cls.text} font-bold text-base leading-tight">${city.city}</p>
+              <p class="${cls.text} text-xs opacity-70 mt-0.5">Country: ${city.country}</p>
+            </div>
+            <span class="${cls.badge} text-white text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap">
+              ${r} Risk
+            </span>
+          </div>
+
+          <div>
+            <p class="${cls.text} text-4xl font-extrabold tabular-nums">${fmtPm25(pm)}</p>
+            <p class="${cls.text} text-xs opacity-60 -mt-0.5">µg/m³ PM2.5</p>
+          </div>
+
+          <!-- PM2.5 mini bar -->
+          <div class="h-2 bg-black/10 rounded-full overflow-hidden">
+            <div class="pm25-bar-fill h-full rounded-full" style="width:${pct}%; background:${pm25Color(pm)}"></div>
+          </div>
+
+          <div class="space-y-1 text-xs ${cls.text}">
+            <p><span class="font-semibold">Footfall:</span> ${city.footfall_impact}</p>
+            <p><span class="font-semibold">Persist. Fcst:</span> ${fmtPm25(city.persistence_forecast_pm25)} µg/m³</p>
+            <p><span class="font-semibold">Recovery Fcst:</span> ${fmtPm25(city.recovery_forecast_pm25)} µg/m³</p>
+          </div>
+
+          <p class="${cls.text} text-xs opacity-50 mt-auto pt-1 border-t border-black/10">
+            Updated: ${fmtDate(city.last_updated)}
+          </p>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // ── Chart ─────────────────────────────────────────────────────────────
+
+    let chartInstance = null;
+
+    function renderChart(data) {
+      const citySlice   = data.filter(d => d.hourly_history && d.hourly_history.length > 0).slice(0, 3);
+      const noHistoryEl = document.getElementById("no-history-msg");
+
+      if (citySlice.length === 0) {
+        document.getElementById("chart-container").style.display = "none";
+        noHistoryEl.classList.remove("hidden");
+        return;
+      }
+
+      // Build unified label set (union of all timestamps, sorted)
+      const allTs = new Set();
+      citySlice.forEach(c => c.hourly_history.forEach(h => allTs.add(h.datetime)));
+      const labels = Array.from(allTs).sort().map(ts => {
+        const d = new Date(ts);
+        return d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+      });
+      const sortedTs = Array.from(allTs).sort();
+
+      const datasets = citySlice.map((city, i) => {
+        const histMap = {};
+        city.hourly_history.forEach(h => { histMap[h.datetime] = h.value; });
+        return {
+          label:           city.city.split(" (")[0],
+          data:            sortedTs.map(ts => histMap[ts] ?? null),
+          borderColor:     chartColors[i],
+          backgroundColor: chartColors[i].replace("0.9", "0.15"),
+          fill:            true,
+          tension:         0.35,
+          pointRadius:     3,
+          pointHoverRadius:6,
+          spanGaps:        true,
+        };
+      });
+
+      // WHO guideline reference line
+      datasets.push({
+        label:       "WHO Limit (15 µg/m³)",
+        data:        sortedTs.map(() => 15),
+        borderColor: "rgba(255,255,255,0.3)",
+        borderDash:  [6, 4],
+        pointRadius: 0,
+        fill:        false,
+        tension:     0,
+      });
+
+      if (chartInstance) chartInstance.destroy();
+
+      chartInstance = new Chart(document.getElementById("pm25Chart"), {
+        type: "line",
+        data: { labels, datasets },
+        options: {
+          responsive:          true,
+          maintainAspectRatio: false,
+          interaction: { mode: "index", intersect: false },
+          plugins: {
+            legend: {
+              labels: { color: "#9ca3af", boxWidth: 14, font: { size: 12 } },
+            },
+            tooltip: {
+              backgroundColor: "#1f2937",
+              titleColor:      "#f3f4f6",
+              bodyColor:       "#d1d5db",
+              callbacks: {
+                label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y?.toFixed(1) ?? "—"} µg/m³`
+              }
+            },
+          },
+          scales: {
+            x: {
+              ticks:  { color: "#6b7280", maxTicksLimit: 8 },
+              grid:   { color: "rgba(255,255,255,0.05)" },
+            },
+            y: {
+              title:  { display: true, text: "PM2.5 (µg/m³)", color: "#6b7280", font: { size: 11 } },
+              ticks:  { color: "#6b7280" },
+              grid:   { color: "rgba(255,255,255,0.05)" },
+              min:    0,
+            }
+          }
+        }
+      });
+    }
+
+    // ── Table ─────────────────────────────────────────────────────────────
+
+    function renderTable(data) {
+      const tbody = document.getElementById("city-table");
+      tbody.innerHTML = "";
+
+      data.forEach(city => {
+        const r   = city.revenue_risk || "Unknown";
+        const cls = riskClass[r] || riskClass.Unknown;
+        const tr  = document.createElement("tr");
+        tr.className = "hover:bg-gray-900/50 transition-colors";
+        tr.innerHTML = `
+          <td class="px-4 py-3 font-medium">${city.city}</td>
+          <td class="px-4 py-3 text-right tabular-nums" style="color:${pm25Color(city.pm25)}">
+            ${fmtPm25(city.pm25)}
+          </td>
+          <td class="px-4 py-3 text-gray-300">${city.footfall_impact || "—"}</td>
+          <td class="px-4 py-3 text-center">
+            <span class="${cls.badge} text-white text-xs px-2 py-0.5 rounded-full">${r}</span>
+          </td>
+          <td class="px-4 py-3 text-right tabular-nums text-gray-400">${fmtPm25(city.persistence_forecast_pm25)}</td>
+          <td class="px-4 py-3 text-right tabular-nums text-gray-400">${fmtPm25(city.recovery_forecast_pm25)}</td>
+          <td class="px-4 py-3 text-right text-gray-500 text-xs">${fmtDate(city.last_updated)}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ── Boot ──────────────────────────────────────────────────────────────
+
+    async function loadDashboard() {
+      try {
+        const resp = await fetch("retail_risk.json");
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const data = await resp.json();
+
+        // Last updated timestamp (most recent across cities)
+        const timestamps = data.map(d => d.last_updated).filter(Boolean).sort();
+        const latest     = timestamps.at(-1);
+        document.getElementById("last-updated").textContent =
+          latest ? `Refreshed: ${fmtDate(latest)}` : "—";
+
+        renderCards(data);
+        renderChart(data);
+        renderTable(data);
+
+      } catch (err) {
+        console.error("Failed to load retail_risk.json:", err);
+
+        document.getElementById("risk-cards").innerHTML = `
+          <div class="col-span-3 bg-red-900/30 border border-red-700 rounded-2xl p-6 text-center text-red-300">
+            <p class="font-semibold text-lg mb-1">⚠ Data Not Found</p>
+            <p class="text-sm">Could not load <code class="bg-red-950 px-1 rounded">retail_risk.json</code>.</p>
+            <p class="text-sm mt-2">Run the pipeline first:<br>
+              <code class="bg-red-950 px-2 py-0.5 rounded text-xs">python air_retail_impact.py</code>
+            </p>
+            <p class="text-sm mt-1">Then serve from this directory:<br>
+              <code class="bg-red-950 px-2 py-0.5 rounded text-xs">python -m http.server 8080</code>
+            </p>
+          </div>`;
+
+        document.getElementById("city-table").innerHTML =
+          `<tr><td colspan="7" class="text-center text-gray-500 py-8">No data — run the pipeline first.</td></tr>`;
+      }
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>
