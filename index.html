@@ -114,6 +114,7 @@
     Data: <a href="https://openaq.org" class="underline hover:text-gray-400" target="_blank">OpenAQ v3</a>
     · WHO PM2.5 guideline 15 µg/m³ (24-hr)
     · Built with Tailwind CSS &amp; Chart.js
+    · <span class="text-yellow-600">Demo snapshot — run <code class="bg-gray-900 px-1 rounded">python air_retail_impact.py</code> to refresh with live data</span>
   </footer>
 
   <!-- ─── JAVASCRIPT ────────────────────────────────────────────────── -->
@@ -332,9 +333,14 @@
         document.getElementById("last-updated").textContent =
           latest ? `Refreshed: ${fmtDate(latest)}` : "—";
 
-        renderCards(data);
+        const riskOrder = { High: 0, Medium: 1, Low: 2, Unknown: 3 };
+        const sorted = [...data].sort((a, b) =>
+          (riskOrder[a.revenue_risk] ?? 3) - (riskOrder[b.revenue_risk] ?? 3)
+        );
+
+        renderCards(sorted);
         renderChart(data);
-        renderTable(data);
+        renderTable(sorted);
 
       } catch (err) {
         console.error("Failed to load retail_risk.json:", err);

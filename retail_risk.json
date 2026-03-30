@@ -1,0 +1,607 @@
+[
+  {
+    "city": "London (High St)",
+    "country": "GB",
+    "pm25": 18.4,
+    "footfall_impact": "Slight Decrease (-5%)",
+    "revenue_risk": "Low",
+    "footfall_pct": -5,
+    "persistence_forecast_pm25": 18.4,
+    "recovery_forecast_pm25": 16.56,
+    "hourly_history": [
+      {
+        "datetime": "2026-03-29T09:00:00+00:00",
+        "value": 18.8
+      },
+      {
+        "datetime": "2026-03-29T10:00:00+00:00",
+        "value": 17.4
+      },
+      {
+        "datetime": "2026-03-29T11:00:00+00:00",
+        "value": 18.4
+      },
+      {
+        "datetime": "2026-03-29T12:00:00+00:00",
+        "value": 18.5
+      },
+      {
+        "datetime": "2026-03-29T13:00:00+00:00",
+        "value": 20.2
+      },
+      {
+        "datetime": "2026-03-29T14:00:00+00:00",
+        "value": 20.1
+      },
+      {
+        "datetime": "2026-03-29T15:00:00+00:00",
+        "value": 20.8
+      },
+      {
+        "datetime": "2026-03-29T16:00:00+00:00",
+        "value": 18.5
+      },
+      {
+        "datetime": "2026-03-29T17:00:00+00:00",
+        "value": 19.3
+      },
+      {
+        "datetime": "2026-03-29T18:00:00+00:00",
+        "value": 18.0
+      },
+      {
+        "datetime": "2026-03-29T19:00:00+00:00",
+        "value": 18.3
+      },
+      {
+        "datetime": "2026-03-29T20:00:00+00:00",
+        "value": 18.7
+      },
+      {
+        "datetime": "2026-03-29T21:00:00+00:00",
+        "value": 17.1
+      },
+      {
+        "datetime": "2026-03-29T22:00:00+00:00",
+        "value": 17.2
+      },
+      {
+        "datetime": "2026-03-29T23:00:00+00:00",
+        "value": 18.2
+      },
+      {
+        "datetime": "2026-03-30T00:00:00+00:00",
+        "value": 17.6
+      },
+      {
+        "datetime": "2026-03-30T01:00:00+00:00",
+        "value": 16.5
+      },
+      {
+        "datetime": "2026-03-30T02:00:00+00:00",
+        "value": 17.4
+      },
+      {
+        "datetime": "2026-03-30T03:00:00+00:00",
+        "value": 18.0
+      },
+      {
+        "datetime": "2026-03-30T04:00:00+00:00",
+        "value": 15.8
+      },
+      {
+        "datetime": "2026-03-30T05:00:00+00:00",
+        "value": 18.1
+      },
+      {
+        "datetime": "2026-03-30T06:00:00+00:00",
+        "value": 18.0
+      },
+      {
+        "datetime": "2026-03-30T07:00:00+00:00",
+        "value": 17.3
+      },
+      {
+        "datetime": "2026-03-30T08:00:00+00:00",
+        "value": 17.1
+      }
+    ],
+    "last_updated": "2026-03-30T08:00:00+00:00"
+  },
+  {
+    "city": "Delhi (Connaught Place)",
+    "country": "IN",
+    "pm25": 187.3,
+    "footfall_impact": "Significant Avoidance (-20%)",
+    "revenue_risk": "Medium",
+    "footfall_pct": -20,
+    "persistence_forecast_pm25": 187.3,
+    "recovery_forecast_pm25": 168.57,
+    "hourly_history": [
+      {
+        "datetime": "2026-03-29T09:00:00+00:00",
+        "value": 200.1
+      },
+      {
+        "datetime": "2026-03-29T10:00:00+00:00",
+        "value": 186.1
+      },
+      {
+        "datetime": "2026-03-29T11:00:00+00:00",
+        "value": 182.4
+      },
+      {
+        "datetime": "2026-03-29T12:00:00+00:00",
+        "value": 185.2
+      },
+      {
+        "datetime": "2026-03-29T13:00:00+00:00",
+        "value": 208.4
+      },
+      {
+        "datetime": "2026-03-29T14:00:00+00:00",
+        "value": 202.9
+      },
+      {
+        "datetime": "2026-03-29T15:00:00+00:00",
+        "value": 209.0
+      },
+      {
+        "datetime": "2026-03-29T16:00:00+00:00",
+        "value": 206.4
+      },
+      {
+        "datetime": "2026-03-29T17:00:00+00:00",
+        "value": 199.7
+      },
+      {
+        "datetime": "2026-03-29T18:00:00+00:00",
+        "value": 209.9
+      },
+      {
+        "datetime": "2026-03-29T19:00:00+00:00",
+        "value": 190.4
+      },
+      {
+        "datetime": "2026-03-29T20:00:00+00:00",
+        "value": 192.2
+      },
+      {
+        "datetime": "2026-03-29T21:00:00+00:00",
+        "value": 196.6
+      },
+      {
+        "datetime": "2026-03-29T22:00:00+00:00",
+        "value": 187.2
+      },
+      {
+        "datetime": "2026-03-29T23:00:00+00:00",
+        "value": 190.9
+      },
+      {
+        "datetime": "2026-03-30T00:00:00+00:00",
+        "value": 180.2
+      },
+      {
+        "datetime": "2026-03-30T01:00:00+00:00",
+        "value": 181.7
+      },
+      {
+        "datetime": "2026-03-30T02:00:00+00:00",
+        "value": 161.9
+      },
+      {
+        "datetime": "2026-03-30T03:00:00+00:00",
+        "value": 166.5
+      },
+      {
+        "datetime": "2026-03-30T04:00:00+00:00",
+        "value": 168.7
+      },
+      {
+        "datetime": "2026-03-30T05:00:00+00:00",
+        "value": 164.1
+      },
+      {
+        "datetime": "2026-03-30T06:00:00+00:00",
+        "value": 170.5
+      },
+      {
+        "datetime": "2026-03-30T07:00:00+00:00",
+        "value": 169.5
+      },
+      {
+        "datetime": "2026-03-30T08:00:00+00:00",
+        "value": 177.7
+      }
+    ],
+    "last_updated": "2026-03-30T08:00:00+00:00"
+  },
+  {
+    "city": "New York (5th Ave)",
+    "country": "US",
+    "pm25": 11.2,
+    "footfall_impact": "Normal (100%)",
+    "revenue_risk": "Low",
+    "footfall_pct": 0,
+    "persistence_forecast_pm25": 11.2,
+    "recovery_forecast_pm25": 10.08,
+    "hourly_history": [
+      {
+        "datetime": "2026-03-29T09:00:00+00:00",
+        "value": 11.4
+      },
+      {
+        "datetime": "2026-03-29T10:00:00+00:00",
+        "value": 11.2
+      },
+      {
+        "datetime": "2026-03-29T11:00:00+00:00",
+        "value": 11.4
+      },
+      {
+        "datetime": "2026-03-29T12:00:00+00:00",
+        "value": 11.3
+      },
+      {
+        "datetime": "2026-03-29T13:00:00+00:00",
+        "value": 11.5
+      },
+      {
+        "datetime": "2026-03-29T14:00:00+00:00",
+        "value": 12.7
+      },
+      {
+        "datetime": "2026-03-29T15:00:00+00:00",
+        "value": 12.2
+      },
+      {
+        "datetime": "2026-03-29T16:00:00+00:00",
+        "value": 12.1
+      },
+      {
+        "datetime": "2026-03-29T17:00:00+00:00",
+        "value": 11.3
+      },
+      {
+        "datetime": "2026-03-29T18:00:00+00:00",
+        "value": 12.1
+      },
+      {
+        "datetime": "2026-03-29T19:00:00+00:00",
+        "value": 11.0
+      },
+      {
+        "datetime": "2026-03-29T20:00:00+00:00",
+        "value": 11.2
+      },
+      {
+        "datetime": "2026-03-29T21:00:00+00:00",
+        "value": 12.0
+      },
+      {
+        "datetime": "2026-03-29T22:00:00+00:00",
+        "value": 11.2
+      },
+      {
+        "datetime": "2026-03-29T23:00:00+00:00",
+        "value": 10.9
+      },
+      {
+        "datetime": "2026-03-30T00:00:00+00:00",
+        "value": 11.0
+      },
+      {
+        "datetime": "2026-03-30T01:00:00+00:00",
+        "value": 11.1
+      },
+      {
+        "datetime": "2026-03-30T02:00:00+00:00",
+        "value": 10.9
+      },
+      {
+        "datetime": "2026-03-30T03:00:00+00:00",
+        "value": 10.0
+      },
+      {
+        "datetime": "2026-03-30T04:00:00+00:00",
+        "value": 9.7
+      },
+      {
+        "datetime": "2026-03-30T05:00:00+00:00",
+        "value": 10.2
+      },
+      {
+        "datetime": "2026-03-30T06:00:00+00:00",
+        "value": 10.3
+      },
+      {
+        "datetime": "2026-03-30T07:00:00+00:00",
+        "value": 10.3
+      },
+      {
+        "datetime": "2026-03-30T08:00:00+00:00",
+        "value": 11.7
+      }
+    ],
+    "last_updated": "2026-03-30T08:00:00+00:00"
+  },
+  {
+    "city": "Beijing (Wangfujing)",
+    "country": "CN",
+    "pm25": 94.1,
+    "footfall_impact": "Slight Decrease (-5%)",
+    "revenue_risk": "Low",
+    "footfall_pct": -5,
+    "persistence_forecast_pm25": 94.1,
+    "recovery_forecast_pm25": 84.69,
+    "hourly_history": [
+      {
+        "datetime": "2026-03-29T09:00:00+00:00",
+        "value": 99.4
+      },
+      {
+        "datetime": "2026-03-29T10:00:00+00:00",
+        "value": 93.2
+      },
+      {
+        "datetime": "2026-03-29T11:00:00+00:00",
+        "value": 99.6
+      },
+      {
+        "datetime": "2026-03-29T12:00:00+00:00",
+        "value": 97.3
+      },
+      {
+        "datetime": "2026-03-29T13:00:00+00:00",
+        "value": 105.7
+      },
+      {
+        "datetime": "2026-03-29T14:00:00+00:00",
+        "value": 99.9
+      },
+      {
+        "datetime": "2026-03-29T15:00:00+00:00",
+        "value": 97.4
+      },
+      {
+        "datetime": "2026-03-29T16:00:00+00:00",
+        "value": 96.9
+      },
+      {
+        "datetime": "2026-03-29T17:00:00+00:00",
+        "value": 100.7
+      },
+      {
+        "datetime": "2026-03-29T18:00:00+00:00",
+        "value": 95.4
+      },
+      {
+        "datetime": "2026-03-29T19:00:00+00:00",
+        "value": 98.6
+      },
+      {
+        "datetime": "2026-03-29T20:00:00+00:00",
+        "value": 101.4
+      },
+      {
+        "datetime": "2026-03-29T21:00:00+00:00",
+        "value": 92.7
+      },
+      {
+        "datetime": "2026-03-29T22:00:00+00:00",
+        "value": 88.4
+      },
+      {
+        "datetime": "2026-03-29T23:00:00+00:00",
+        "value": 97.8
+      },
+      {
+        "datetime": "2026-03-30T00:00:00+00:00",
+        "value": 89.6
+      },
+      {
+        "datetime": "2026-03-30T01:00:00+00:00",
+        "value": 82.6
+      },
+      {
+        "datetime": "2026-03-30T02:00:00+00:00",
+        "value": 81.3
+      },
+      {
+        "datetime": "2026-03-30T03:00:00+00:00",
+        "value": 82.0
+      },
+      {
+        "datetime": "2026-03-30T04:00:00+00:00",
+        "value": 89.5
+      },
+      {
+        "datetime": "2026-03-30T05:00:00+00:00",
+        "value": 92.5
+      },
+      {
+        "datetime": "2026-03-30T06:00:00+00:00",
+        "value": 88.3
+      },
+      {
+        "datetime": "2026-03-30T07:00:00+00:00",
+        "value": 84.6
+      },
+      {
+        "datetime": "2026-03-30T08:00:00+00:00",
+        "value": 90.7
+      }
+    ],
+    "last_updated": "2026-03-30T08:00:00+00:00"
+  },
+  {
+    "city": "Mumbai (Dharavi)",
+    "country": "IN",
+    "pm25": 142.8,
+    "footfall_impact": "Significant Avoidance (-20%)",
+    "revenue_risk": "Medium",
+    "footfall_pct": -20,
+    "persistence_forecast_pm25": 142.8,
+    "recovery_forecast_pm25": 128.52,
+    "hourly_history": [
+      {
+        "datetime": "2026-03-29T09:00:00+00:00",
+        "value": 153.4
+      },
+      {
+        "datetime": "2026-03-29T10:00:00+00:00",
+        "value": 146.0
+      },
+      {
+        "datetime": "2026-03-29T11:00:00+00:00",
+        "value": 157.9
+      },
+      {
+        "datetime": "2026-03-29T12:00:00+00:00",
+        "value": 157.6
+      },
+      {
+        "datetime": "2026-03-29T13:00:00+00:00",
+        "value": 141.0
+      },
+      {
+        "datetime": "2026-03-29T14:00:00+00:00",
+        "value": 157.2
+      },
+      {
+        "datetime": "2026-03-29T15:00:00+00:00",
+        "value": 156.7
+      },
+      {
+        "datetime": "2026-03-29T16:00:00+00:00",
+        "value": 153.2
+      },
+      {
+        "datetime": "2026-03-29T17:00:00+00:00",
+        "value": 146.5
+      },
+      {
+        "datetime": "2026-03-29T18:00:00+00:00",
+        "value": 152.9
+      },
+      {
+        "datetime": "2026-03-29T19:00:00+00:00",
+        "value": 139.5
+      },
+      {
+        "datetime": "2026-03-29T20:00:00+00:00",
+        "value": 144.0
+      },
+      {
+        "datetime": "2026-03-29T21:00:00+00:00",
+        "value": 141.8
+      },
+      {
+        "datetime": "2026-03-29T22:00:00+00:00",
+        "value": 149.9
+      },
+      {
+        "datetime": "2026-03-29T23:00:00+00:00",
+        "value": 145.9
+      },
+      {
+        "datetime": "2026-03-30T00:00:00+00:00",
+        "value": 130.7
+      },
+      {
+        "datetime": "2026-03-30T01:00:00+00:00",
+        "value": 134.2
+      },
+      {
+        "datetime": "2026-03-30T02:00:00+00:00",
+        "value": 126.3
+      },
+      {
+        "datetime": "2026-03-30T03:00:00+00:00",
+        "value": 141.6
+      },
+      {
+        "datetime": "2026-03-30T04:00:00+00:00",
+        "value": 141.1
+      },
+      {
+        "datetime": "2026-03-30T05:00:00+00:00",
+        "value": 129.8
+      },
+      {
+        "datetime": "2026-03-30T06:00:00+00:00",
+        "value": 138.7
+      },
+      {
+        "datetime": "2026-03-30T07:00:00+00:00",
+        "value": 140.1
+      },
+      {
+        "datetime": "2026-03-30T08:00:00+00:00",
+        "value": 132.8
+      }
+    ],
+    "last_updated": "2026-03-30T08:00:00+00:00"
+  },
+  {
+    "city": "Lahore (Old City)",
+    "country": "PK",
+    "pm25": 263.5,
+    "footfall_impact": "Retail Standstill (-50%)",
+    "revenue_risk": "High",
+    "footfall_pct": -50,
+    "persistence_forecast_pm25": 263.5,
+    "recovery_forecast_pm25": 237.15,
+    "hourly_history": [],
+    "last_updated": "2026-03-30T08:00:00+00:00"
+  },
+  {
+    "city": "Dhaka (Motijheel)",
+    "country": "BD",
+    "pm25": 198.7,
+    "footfall_impact": "Significant Avoidance (-20%)",
+    "revenue_risk": "Medium",
+    "footfall_pct": -20,
+    "persistence_forecast_pm25": 198.7,
+    "recovery_forecast_pm25": 178.83,
+    "hourly_history": [],
+    "last_updated": "2026-03-30T08:00:00+00:00"
+  },
+  {
+    "city": "Bangkok (Silom)",
+    "country": "TH",
+    "pm25": 52.3,
+    "footfall_impact": "Slight Decrease (-5%)",
+    "revenue_risk": "Low",
+    "footfall_pct": -5,
+    "persistence_forecast_pm25": 52.3,
+    "recovery_forecast_pm25": 47.07,
+    "hourly_history": [],
+    "last_updated": "2026-03-30T08:00:00+00:00"
+  },
+  {
+    "city": "Cairo (Downtown)",
+    "country": "EG",
+    "pm25": 74.6,
+    "footfall_impact": "Slight Decrease (-5%)",
+    "revenue_risk": "Low",
+    "footfall_pct": -5,
+    "persistence_forecast_pm25": 74.6,
+    "recovery_forecast_pm25": 67.14,
+    "hourly_history": [],
+    "last_updated": "2026-03-30T08:00:00+00:00"
+  },
+  {
+    "city": "Mexico City (Zócalo)",
+    "country": "MX",
+    "pm25": 38.9,
+    "footfall_impact": "Slight Decrease (-5%)",
+    "revenue_risk": "Low",
+    "footfall_pct": -5,
+    "persistence_forecast_pm25": 38.9,
+    "recovery_forecast_pm25": 35.01,
+    "hourly_history": [],
+    "last_updated": "2026-03-30T08:00:00+00:00"
+  }
+]
